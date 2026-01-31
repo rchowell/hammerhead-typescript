@@ -1,10 +1,10 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import { APIPromise } from 'hammerhead/core/api-promise';
+import { APIPromise } from 'hammerhead-typescript/core/api-promise';
 
 import util from 'node:util';
-import Hammerhead from 'hammerhead';
-import { APIUserAbortError } from 'hammerhead';
+import Hammerhead from 'hammerhead-typescript';
+import { APIUserAbortError } from 'hammerhead-typescript';
 const defaultFetch = fetch;
 
 describe('instantiate client', () => {

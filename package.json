@@ -1,12 +1,12 @@
 {
-  "name": "hammerhead",
-  "version": "0.0.1",
+  "name": "hammerhead-typescript",
+  "version": "0.0.2",
   "description": "The official TypeScript library for the Hammerhead API",
   "author": "Hammerhead <support@hammerhead.io>",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "type": "commonjs",
-  "repository": "github:stainless-sdks/hammerhead-typescript",
+  "repository": "github:rchowell/hammerhead-typescript",
   "license": "Apache-2.0",
   "packageManager": "pnpm@10.24.0",
   "files": [

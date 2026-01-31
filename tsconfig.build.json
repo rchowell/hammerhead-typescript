@@ -5,8 +5,8 @@
   "compilerOptions": {
     "rootDir": "./dist/src",
     "paths": {
-      "hammerhead/*": ["./dist/src/*"],
-      "hammerhead": ["./dist/src/index.ts"]
+      "hammerhead-typescript/*": ["./dist/src/*"],
+      "hammerhead-typescript": ["./dist/src/index.ts"]
     },
     "noEmit": false,
     "declaration": true,

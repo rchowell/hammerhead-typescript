@@ -7,8 +7,8 @@ const config: JestConfigWithTsJest = {
     '^.+\\.(t|j)sx?$': ['@swc/jest', { sourceMaps: 'inline' }],
   },
   moduleNameMapper: {
-    '^hammerhead$': '<rootDir>/src/index.ts',
-    '^hammerhead/(.*)$': '<rootDir>/src/$1',
+    '^hammerhead-typescript$': '<rootDir>/src/index.ts',
+    '^hammerhead-typescript/(.*)$': '<rootDir>/src/$1',
   },
   modulePathIgnorePatterns: [
     '<rootDir>/ecosystem-tests/',

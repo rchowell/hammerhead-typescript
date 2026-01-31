@@ -25,7 +25,7 @@ export default tseslint.config(
         {
           patterns: [
             {
-              regex: '^hammerhead(/.*)?',
+              regex: '^hammerhead-typescript(/.*)?',
               message: 'Use a relative import, not a package import.',
             },
           ],
