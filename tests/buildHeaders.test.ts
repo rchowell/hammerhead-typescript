@@ -1,5 +1,5 @@
 import { inspect } from 'node:util';
-import { buildHeaders, type HeadersLike, type NullableHeaders } from 'hammerhead/internal/headers';
+import { buildHeaders, type HeadersLike, type NullableHeaders } from 'hammerhead-typescript/internal/headers';
 
 function inspectNullableHeaders(headers: NullableHeaders) {
   return `NullableHeaders {${[

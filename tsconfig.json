@@ -8,8 +8,8 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "paths": {
-      "hammerhead/*": ["./src/*"],
-      "hammerhead": ["./src/index.ts"]
+      "hammerhead-typescript/*": ["./src/*"],
+      "hammerhead-typescript": ["./src/index.ts"]
     },
     "noEmit": true,
 
