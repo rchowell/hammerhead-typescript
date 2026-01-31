@@ -1,6 +1,6 @@
 import fs from 'fs';
-import type { ResponseLike } from 'hammerhead/internal/to-file';
-import { toFile } from 'hammerhead/core/uploads';
+import type { ResponseLike } from 'hammerhead-typescript/internal/to-file';
+import { toFile } from 'hammerhead-typescript/core/uploads';
 import { File } from 'node:buffer';
 
 class MyClass {
@@ -97,7 +97,7 @@ describe('missing File error message', () => {
   });
 
   test('is thrown', async () => {
-    const uploads = await import('hammerhead/core/uploads');
+    const uploads = await import('hammerhead-typescript/core/uploads');
     await expect(
       uploads.toFile(mockResponse({ url: 'https://example.com/my/audio.mp3' })),
     ).rejects.toMatchInlineSnapshot(

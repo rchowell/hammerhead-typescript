@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import Hammerhead from 'hammerhead';
+import Hammerhead from 'hammerhead-typescript';
 
 const client = new Hammerhead({
   webhookSignature: 'My Webhook Signature',

@@ -1,5 +1,5 @@
 {
-  "name": "hammerhead",
+  "name": "hammerhead-typescript",
   "version": "0.0.1",
   "description": "The official TypeScript library for the Hammerhead API",
   "author": "Hammerhead <support@hammerhead.io>",

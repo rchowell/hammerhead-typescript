@@ -1,5 +1,5 @@
-import { multipartFormRequestOptions, createForm } from 'hammerhead/internal/uploads';
-import { toFile } from 'hammerhead/core/uploads';
+import { multipartFormRequestOptions, createForm } from 'hammerhead-typescript/internal/uploads';
+import { toFile } from 'hammerhead-typescript/core/uploads';
 
 describe('form data validation', () => {
   test('valid values do not error', async () => {
