@@ -8,7 +8,7 @@ const client = new Hammerhead({
 });
 
 describe('resource oauth', () => {
-  // Mock server doesn't properly handle redirects
+  // Mock server tests are disabled
   test.skip('authorize: only required params', async () => {
     const responsePromise = client.oauth.authorize({
       client_id: 'client_id',
@@ -26,7 +26,7 @@ describe('resource oauth', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Mock server doesn't properly handle redirects
+  // Mock server tests are disabled
   test.skip('authorize: required and optional params', async () => {
     const response = await client.oauth.authorize({
       client_id: 'client_id',
