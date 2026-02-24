@@ -60,7 +60,7 @@ $ yarn link hammerhead-typescript
 # With pnpm
 $ pnpm link --global
 $ cd ../my-package
-$ pnpm link -—global hammerhead-typescript
+$ pnpm link --global hammerhead-typescript
 ```
 
 ## Running tests
