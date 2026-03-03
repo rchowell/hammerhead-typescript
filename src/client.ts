@@ -739,9 +739,59 @@ export class Hammerhead {
 
   static toFile = Uploads.toFile;
 
+  /**
+   * Access to our API is authorized using the [OAuth 2.0](https://datatracker.ietf.org/doc/html/rfc6749) authorization framework.
+   *
+   * To get started, you will need to create an API Client and obtain a client ID and secret.
+   *
+   * Users can then be authorized by providing a link to our authorization url:
+   *
+   * ```html
+   * <a href="https://api.hammerhead.io/v1/auth/oauth/authorize
+   *   ?client_id={client_id}
+   *   &redirect_uri={redirect_uri}
+   *   &response_type=code
+   *   &scope={scope}
+   *   &state={state}"
+   * />
+   * ```
+   *
+   * This will redirect users to our OAuth Confirm page where users will be allowed to
+   * select a subset of scopes from the ones requested. Scopes should be space delimited.
+   *
+   * On deny, users will be sent to the `redirect_uri` with an error set:
+   *
+   * ```
+   * {redirect_uri}?error=access_denied&state={state}
+   * ```
+   *
+   * On accept, users accounts will be linked with the selected scopes and will be sent to
+   * the `redirect_uri` with the auth code and state:
+   *
+   * ```
+   * {redirect_uri}?code={code}&state={state}
+   * ```
+   *
+   * Once code and state are received, they can be exchanged for an access token using the `/oauth/token` endpoint.
+   *
+   * This bearer token can then be used to access our API endpoints.
+   *
+   */
   oauth: API.OAuth = new API.OAuth(this);
+  /**
+   * Endpoints related to user activity data and syncing.
+   *
+   */
   activities: API.Activities = new API.Activities(this);
+  /**
+   * Endpoints related to user route management.
+   *
+   */
   routes: API.Routes = new API.Routes(this);
+  /**
+   * Endpoints related to user workout management.
+   *
+   */
   workouts: API.Workouts = new API.Workouts(this);
 }
 
