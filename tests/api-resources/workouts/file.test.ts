@@ -25,7 +25,7 @@ describe('resource file', () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
       client.workouts.file.create(
-        { plannedDate: 'plannedDate', file: await toFile(Buffer.from('# my file contents'), 'README.md') },
+        { plannedDate: 'plannedDate', file: await toFile(Buffer.from('Example data'), 'README.md') },
         { path: '/_stainless_unknown_path' },
       ),
     ).rejects.toThrow(Hammerhead.NotFoundError);
@@ -49,7 +49,7 @@ describe('resource file', () => {
     await expect(
       client.workouts.file.update(
         'workoutId',
-        { plannedDate: 'plannedDate', file: await toFile(Buffer.from('# my file contents'), 'README.md') },
+        { plannedDate: 'plannedDate', file: await toFile(Buffer.from('Example data'), 'README.md') },
         { path: '/_stainless_unknown_path' },
       ),
     ).rejects.toThrow(Hammerhead.NotFoundError);
