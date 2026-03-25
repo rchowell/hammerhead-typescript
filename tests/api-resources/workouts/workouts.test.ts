@@ -8,7 +8,7 @@ const client = new Hammerhead({
 });
 
 describe('resource workouts', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('delete', async () => {
     const responsePromise = client.workouts.delete('workoutId');
     const rawResponse = await responsePromise.asResponse();

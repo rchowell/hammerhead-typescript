@@ -11,6 +11,7 @@ import type { APIResponseProps } from './internal/parse';
 import { getPlatformHeaders } from './internal/detect-platform';
 import * as Shims from './internal/shims';
 import * as Opts from './internal/request-options';
+import { stringifyQuery } from './internal/utils/query';
 import { VERSION } from './version';
 import * as Errors from './core/error';
 import * as Uploads from './core/uploads';
@@ -235,21 +236,8 @@ export class Hammerhead {
   /**
    * Basic re-implementation of `qs.stringify` for primitive types.
    */
-  protected stringifyQuery(query: Record<string, unknown>): string {
-    return Object.entries(query)
-      .filter(([_, value]) => typeof value !== 'undefined')
-      .map(([key, value]) => {
-        if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-          return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-        }
-        if (value === null) {
-          return `${encodeURIComponent(key)}=`;
-        }
-        throw new Errors.HammerheadError(
-          `Cannot stringify type ${typeof value}; Expected string, number, boolean, or null. If you need to pass nested query parameters, you can manually encode them, e.g. { query: { 'foo[key1]': value1, 'foo[key2]': value2 } }, and please open a GitHub issue requesting better support for your use case.`,
-        );
-      })
-      .join('&');
+  protected stringifyQuery(query: object | Record<string, unknown>): string {
+    return stringifyQuery(query);
   }
 
   private getUserAgent(): string {
@@ -281,12 +269,13 @@ export class Hammerhead {
       : new URL(baseURL + (baseURL.endsWith('/') && path.startsWith('/') ? path.slice(1) : path));
 
     const defaultQuery = this.defaultQuery();
-    if (!isEmptyObj(defaultQuery)) {
-      query = { ...defaultQuery, ...query };
+    const pathQuery = Object.fromEntries(url.searchParams);
+    if (!isEmptyObj(defaultQuery) || !isEmptyObj(pathQuery)) {
+      query = { ...pathQuery, ...defaultQuery, ...query };
     }
 
     if (typeof query === 'object' && query && !Array.isArray(query)) {
-      url.search = this.stringifyQuery(query as Record<string, unknown>);
+      url.search = this.stringifyQuery(query);
     }
 
     return url.toString();
@@ -470,7 +459,7 @@ export class Hammerhead {
       loggerFor(this).info(`${responseInfo} - ${retryMessage}`);
 
       const errText = await response.text().catch((err: any) => castToError(err).message);
-      const errJSON = safeJSON(errText);
+      const errJSON = safeJSON(errText) as any;
       const errMessage = errJSON ? undefined : errText;
 
       loggerFor(this).debug(
@@ -511,9 +500,10 @@ export class Hammerhead {
     controller: AbortController,
   ): Promise<Response> {
     const { signal, method, ...options } = init || {};
-    if (signal) signal.addEventListener('abort', () => controller.abort());
+    const abort = this._makeAbort(controller);
+    if (signal) signal.addEventListener('abort', abort, { once: true });
 
-    const timeout = setTimeout(() => controller.abort(), ms);
+    const timeout = setTimeout(abort, ms);
 
     const isReadableBody =
       ((globalThis as any).ReadableStream && options.body instanceof (globalThis as any).ReadableStream) ||
@@ -590,9 +580,9 @@ export class Hammerhead {
       }
     }
 
-    // If the API asks us to wait a certain amount of time (and it's a reasonable amount),
-    // just do what it says, but otherwise calculate a default
-    if (!(timeoutMillis && 0 <= timeoutMillis && timeoutMillis < 60 * 1000)) {
+    // If the API asks us to wait a certain amount of time, just do what it
+    // says, but otherwise calculate a default
+    if (timeoutMillis === undefined) {
       const maxRetries = options.maxRetries ?? this.maxRetries;
       timeoutMillis = this.calculateDefaultRetryTimeoutMillis(retriesRemaining, maxRetries);
     }
@@ -680,6 +670,12 @@ export class Hammerhead {
     return headers.values;
   }
 
+  private _makeAbort(controller: AbortController) {
+    // note: we can't just inline this method inside `fetchWithTimeout()` because then the closure
+    //       would capture all request options, and cause a memory leak.
+    return () => controller.abort();
+  }
+
   private buildBody({ options: { body, headers: rawHeaders } }: { options: FinalRequestOptions }): {
     bodyHeaders: HeadersLike;
     body: BodyInit | undefined;
@@ -712,6 +708,14 @@ export class Hammerhead {
         (Symbol.iterator in body && 'next' in body && typeof body.next === 'function'))
     ) {
       return { bodyHeaders: undefined, body: Shims.ReadableStreamFrom(body as AsyncIterable<Uint8Array>) };
+    } else if (
+      typeof body === 'object' &&
+      headers.values.get('content-type') === 'application/x-www-form-urlencoded'
+    ) {
+      return {
+        bodyHeaders: { 'content-type': 'application/x-www-form-urlencoded' },
+        body: this.stringifyQuery(body),
+      };
     } else {
       return this.#encoder({ body, headers });
     }
@@ -736,9 +740,59 @@ export class Hammerhead {
 
   static toFile = Uploads.toFile;
 
+  /**
+   * Access to our API is authorized using the [OAuth 2.0](https://datatracker.ietf.org/doc/html/rfc6749) authorization framework.
+   *
+   * To get started, you will need to create an API Client and obtain a client ID and secret.
+   *
+   * Users can then be authorized by providing a link to our authorization url:
+   *
+   * ```html
+   * <a href="https://api.hammerhead.io/v1/auth/oauth/authorize
+   *   ?client_id={client_id}
+   *   &redirect_uri={redirect_uri}
+   *   &response_type=code
+   *   &scope={scope}
+   *   &state={state}"
+   * />
+   * ```
+   *
+   * This will redirect users to our OAuth Confirm page where users will be allowed to
+   * select a subset of scopes from the ones requested. Scopes should be space delimited.
+   *
+   * On deny, users will be sent to the `redirect_uri` with an error set:
+   *
+   * ```
+   * {redirect_uri}?error=access_denied&state={state}
+   * ```
+   *
+   * On accept, users accounts will be linked with the selected scopes and will be sent to
+   * the `redirect_uri` with the auth code and state:
+   *
+   * ```
+   * {redirect_uri}?code={code}&state={state}
+   * ```
+   *
+   * Once code and state are received, they can be exchanged for an access token using the `/oauth/token` endpoint.
+   *
+   * This bearer token can then be used to access our API endpoints.
+   *
+   */
   oauth: API.OAuth = new API.OAuth(this);
+  /**
+   * Endpoints related to user activity data and syncing.
+   *
+   */
   activities: API.Activities = new API.Activities(this);
+  /**
+   * Endpoints related to user route management.
+   *
+   */
   routes: API.Routes = new API.Routes(this);
+  /**
+   * Endpoints related to user workout management.
+   *
+   */
   workouts: API.Workouts = new API.Workouts(this);
 }
 

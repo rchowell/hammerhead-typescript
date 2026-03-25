@@ -6,6 +6,9 @@ import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
+/**
+ * Endpoints related to user activity data and syncing.
+ */
 export class Activities extends APIResource {
   /**
    * Get detailed information about a single activity by ID.

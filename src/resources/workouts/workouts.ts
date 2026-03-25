@@ -8,6 +8,9 @@ import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
+/**
+ * Endpoints related to user workout management.
+ */
 export class Workouts extends APIResource {
   file: FileAPI.File = new FileAPI.File(this._client);
 

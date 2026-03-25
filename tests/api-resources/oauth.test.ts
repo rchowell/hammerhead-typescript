@@ -8,7 +8,7 @@ const client = new Hammerhead({
 });
 
 describe('resource oauth', () => {
-  // Prism doesn't properly handle redirects
+  // Mock server tests are disabled
   test.skip('authorize: only required params', async () => {
     const responsePromise = client.oauth.authorize({
       client_id: 'client_id',
@@ -26,7 +26,7 @@ describe('resource oauth', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism doesn't properly handle redirects
+  // Mock server tests are disabled
   test.skip('authorize: required and optional params', async () => {
     const response = await client.oauth.authorize({
       client_id: 'client_id',
@@ -37,7 +37,7 @@ describe('resource oauth', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('deauthorize: only required params', async () => {
     const responsePromise = client.oauth.deauthorize({
       token: 'token',
@@ -53,7 +53,7 @@ describe('resource oauth', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('deauthorize: required and optional params', async () => {
     const response = await client.oauth.deauthorize({
       token: 'token',
@@ -62,7 +62,7 @@ describe('resource oauth', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('exchangeToken: only required params', async () => {
     const responsePromise = client.oauth.exchangeToken({
       client_id: 'client_id',
@@ -78,7 +78,7 @@ describe('resource oauth', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('exchangeToken: required and optional params', async () => {
     const response = await client.oauth.exchangeToken({
       client_id: 'client_id',

@@ -7,6 +7,9 @@ import { RequestOptions } from '../../internal/request-options';
 import { multipartFormRequestOptions } from '../../internal/uploads';
 import { path } from '../../internal/utils/path';
 
+/**
+ * Endpoints related to user workout management.
+ */
 export class File extends APIResource {
   /**
    * Create a workout using a supported workout file.

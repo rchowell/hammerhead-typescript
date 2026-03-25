@@ -8,6 +8,9 @@ import { RequestOptions } from '../../internal/request-options';
 import { multipartFormRequestOptions } from '../../internal/uploads';
 import { path } from '../../internal/utils/path';
 
+/**
+ * Endpoints related to user route management.
+ */
 export class File extends APIResource {
   /**
    * Create a route using a supported route file.
